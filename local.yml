@@ -20,6 +20,7 @@
         - intellij-idea-community
         - code
         - netbeans  
+        - postman       
 
     - name: Install tasksel
       apt:
@@ -30,10 +31,6 @@
     - name: Check if xubuntu-desktop is installed
       shell: 'dpkg-query -W xubuntu-desktop | cut -c -15'
       register: xubuntu_installed
-
-    - name: Print xubuntu_installed var
-      debug:
-        var: xubuntu_installed
 
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
