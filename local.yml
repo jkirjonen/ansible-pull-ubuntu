@@ -31,6 +31,10 @@
       shell: 'dpkg-query -W xubuntu-desktop | cut -c -15'
       register: xubuntu_installed
 
+    - name: Print xubuntu_installed var
+      debug:
+        var: xubuntu_installed
+
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
       when: xubuntu_installed.stdout != "xubuntu-desktop"
