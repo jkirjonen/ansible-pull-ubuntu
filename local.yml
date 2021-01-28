@@ -2,14 +2,14 @@
 - name: Ubuntu provisioning
   hosts: local
   tasks:
-    - name: Install Desktop
+    - name: Install Tasksel
       apt:
-        name: 
-          - xfce4
-          - xfce4-goodies  
-          - slim
-        install_recommends: no    
+        name: tasksel
+        install_recommends: yes    
         state: present
+
+    - name: Install desktop
+      command: 'tasksel install mate-desktop'        
 
     - name: Set default target to X
       command: 'systemctl set-default graphical'  
