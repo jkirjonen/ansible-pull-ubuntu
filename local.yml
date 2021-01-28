@@ -3,14 +3,40 @@
   hosts: local
   become: yes
   tasks:
-    - name: Install Tasksel
+    - name: Install apt packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - openjdk-8-jdk
+        - docker
+        - docker-compose
+
+    - name: Install snap packages
+      snap:
+        name: "{{ item }}"
+        classic: yes
+      loop:
+        - intellij-idea-community
+        - code
+        - netbeans  
+
+    - name: Install tasksel
       apt:
         name: tasksel
         install_recommends: yes    
         state: present
 
+    - name: Check if xubuntu-desktop is installed
+      command: 'dpkg-query -W xubuntu-desktop | wc -l'
+      register: xubuntu-installed
+
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
+      when: xubuntu-installed == 0
+      notify: reboot
 
+
+  handlers:
     - name: reboot
       reboot:
