@@ -28,12 +28,12 @@
         state: present
 
     - name: Check if xubuntu-desktop is installed
-      command: 'dpkg-query -W xubuntu-desktop | wc -l'
+      command: 'dpkg-query -W xubuntu-desktop | cut -c -15'
       register: xubuntu_installed
 
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
-      when: xubuntu_installed.stdout == "0"
+      when: xubuntu_installed.stdout != "xubuntu-desktop"
       notify: reboot
 
   handlers:
