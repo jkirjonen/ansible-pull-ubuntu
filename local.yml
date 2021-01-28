@@ -2,10 +2,11 @@
 - name: Ubuntu provisioning
   hosts: local
   tasks:
-    - name: Install Mate Desktop
+    - name: Install Desktop
       apt:
         name: 
-          - ubuntu-mate-desktop
+          - xfce4
+          - xfce4-goodies  
           - lightdm
         install_recommends: no    
         state: present
