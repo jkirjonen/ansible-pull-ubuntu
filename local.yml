@@ -7,9 +7,9 @@
         name: 
           - xfce4
           - xfce4-goodies  
-          - lightdm
+          - slim
         install_recommends: no    
         state: present
 
     - name: Set default target to X
-      command: 'systemctl set-default graphical'
+      command: 'systemctl set-default graphical'  
