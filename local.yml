@@ -1,0 +1,15 @@
+---
+- name: Ubuntu provisioning
+  hosts: local
+  become: yes
+  tasks:
+    - name: Install Mate Desktop
+      apt:
+        name: 
+          - ubuntu-mate-desktop
+          - lightdm
+        install_recommends: no    
+        state: present
+
+    - name: Set default target to X
+      command: 'systemctl set-default graphical'
