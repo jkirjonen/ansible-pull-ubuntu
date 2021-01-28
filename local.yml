@@ -1,6 +1,7 @@
 ---
 - name: Ubuntu provisioning
   hosts: local
+  become: yes
   tasks:
     - name: Install Tasksel
       apt:
@@ -9,7 +10,7 @@
         state: present
 
     - name: Install desktop
-      command: 'tasksel install mate-desktop'        
+      command: 'tasksel install xubuntu-desktop'
 
-    - name: Set default target to X
-      command: 'systemctl set-default graphical'  
+    - name: reboot
+      reboot:
