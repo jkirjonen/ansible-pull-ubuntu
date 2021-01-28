@@ -29,11 +29,11 @@
 
     - name: Check if xubuntu-desktop is installed
       command: 'dpkg-query -W xubuntu-desktop | wc -l'
-      register: xubuntu-installed
+      register: xubuntu_installed
 
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
-      when: xubuntu-installed == 0
+      when: xubuntu_installed.stdout == "0"
       notify: reboot
 
   handlers:
