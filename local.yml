@@ -28,7 +28,7 @@
         state: present
 
     - name: Check if xubuntu-desktop is installed
-      command: 'dpkg-query -W xubuntu-desktop | cut -c -15'
+      shell: 'dpkg-query -W xubuntu-desktop | cut -c -15'
       register: xubuntu_installed
 
     - name: Install desktop
