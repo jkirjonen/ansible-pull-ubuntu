@@ -36,7 +36,6 @@
       when: xubuntu-installed == 0
       notify: reboot
 
-
   handlers:
     - name: reboot
       reboot:
