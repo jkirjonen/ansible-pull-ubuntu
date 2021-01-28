@@ -12,5 +12,4 @@
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
 
-    - name: reboot
-      reboot:
+   
