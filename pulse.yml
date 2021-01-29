@@ -45,7 +45,9 @@
 
 - name: Fix line in pulse desktop app
   lineinfile: 
-    path: "$HOME/.local/share/applications/pulseUi.desktop"
+    path: "home/vagrant/.local/share/applications/pulseUi.desktop"
     regexp: '^Exec=' 
     line: "Exec=/usr/bin/env LD_LIBRARY_PATH=/usr/local/pulse/extra/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH /usr/local/pulse/pulseUi"
+    owner: vagrant
+    group: vagrant
   become: false
