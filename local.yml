@@ -43,12 +43,7 @@
       when: 
         - pulse_installed.stdout != 'pulse'
         - xubuntu_installed.stdout == "xubuntu-desktop"      
-        
-    - name: Install desktop
-      command: 'tasksel install xubuntu-desktop'
-      when: xubuntu_installed.stdout != "xubuntu-desktop"
-      ignore_errors: yes
-                     
+
     - name: Check if Soap script exist
       stat: 
         path: /home/vagrant/.soap
@@ -72,7 +67,16 @@
         state: touch
         owner: vagrant
         group: vagrant
-      when: soap_exist.stat.exists == false   
+      when: 
+        - soap_exist.stat.exists == false
+        - xubuntu_installed.stdout == "xubuntu-desktop"
+
+    - name: Install desktop
+      command: 'tasksel install xubuntu-desktop'
+      when: xubuntu_installed.stdout != "xubuntu-desktop"
+      ignore_errors: yes
+                     
+ 
       
 
 
