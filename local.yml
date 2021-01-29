@@ -23,14 +23,6 @@
         - netbeans  
         - postman
 
-    - name: Check if Pulse VPN is installed
-      shell: 'dpkg-query -W pulse | cut -c -5'
-      register: pulse_installed 
-      changed_when: pulse_installed.stdout != 'pulse'
-
-    - include_tasks: pulse.yml
-      when: pulse_installed.stdout != 'pulse'
-
     - name: Install tasksel
       apt:
         name: tasksel
@@ -46,8 +38,12 @@
       command: 'tasksel install xubuntu-desktop'
       when: xubuntu_installed.stdout != "xubuntu-desktop"
       ignore_errors: yes
-      notify: reboot
+      
+    - name: Check if Pulse VPN is installed
+      shell: 'dpkg-query -W pulse | cut -c -5'
+      register: pulse_installed 
+      changed_when: pulse_installed.stdout != 'pulse'
 
-  handlers:
-    - name: reboot
-      reboot:
+    - include_tasks: pulse.yml
+      when: pulse_installed.stdout != 'pulse'  
+
