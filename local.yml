@@ -1,6 +1,6 @@
 ---
 - name: Ubuntu provisioning
-  hosts: local
+  hosts: localhost
   become: yes
   tasks:
     - name: Install apt packages
@@ -20,7 +20,24 @@
         - intellij-idea-community
         - code
         - netbeans  
-        - postman       
+        - postman
+
+    - name: Check if Pulse VPN is installed
+      shell: 'dpkg-query -W pulse | cut -c -5'
+      register: pulse_installed 
+      changed_when: pulse_installed.stdout != 'pulse'
+
+    - name: Download Pulse VPN
+      get_url:
+        url: https://software.uconn.edu/wp-content/uploads/sites/1721/2019/09/Pulse-linux-9.1r2.0-x64.deb       
+        dest: /tmp/Pulse-linux-9.1r2.0-x64.deb
+        mode: '0775'
+      when: pulse_installed.stdout != 'pulse'
+
+    - name: Install Pulse VPN
+      apt:
+        deb: /tmp/Pulse-linux-9.1r2.0-x64.deb
+      when: pulse_installed.stdout != 'pulse'  
 
     - name: Install tasksel
       apt:
@@ -31,10 +48,12 @@
     - name: Check if xubuntu-desktop is installed
       shell: 'dpkg-query -W xubuntu-desktop | cut -c -15'
       register: xubuntu_installed
+      changed_when: xubuntu_installed.stdout != "xubuntu-desktop"
 
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
       when: xubuntu_installed.stdout != "xubuntu-desktop"
+      ignore_errors: yes
       notify: reboot
 
   handlers:
