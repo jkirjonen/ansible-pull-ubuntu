@@ -28,9 +28,6 @@
       register: pulse_installed 
       changed_when: pulse_installed.stdout != 'pulse'
 
-    - include_tasks: pulse.yml
-      when: pulse_installed.stdout != 'pulse'
-      
     - name: Install tasksel
       apt:
         name: tasksel
@@ -41,43 +38,40 @@
       shell: 'dpkg-query -W xubuntu-desktop | cut -c -15'
       register: xubuntu_installed
       changed_when: xubuntu_installed.stdout != "xubuntu-desktop"
-
+      
+    - include_tasks: pulse.yml
+      when: 
+        - pulse_installed.stdout != 'pulse'
+        - xubuntu_installed.stdout == "xubuntu-desktop"      
+        
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
       when: xubuntu_installed.stdout != "xubuntu-desktop"
       ignore_errors: yes
-      
-    - name: Fix line in pulse desktop app
-      lineinfile: 
-        path: "$HOME/.local/share/applications/pulseUi.desktop"
-        regexp: '^Exec=' 
-        line: "Exec=/usr/bin/env LD_LIBRARY_PATH=/usr/local/pulse/extra/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH /usr/local/pulse/pulseUi"
-      become: false
-      ignore_errors: yes
-      when: 
-        - pulse_installed.stdout == "pulse"
-        - xubuntu_installed.stdout == "xubuntu-desktop"
-        
+                     
     - name: Check if Soap script exist
       stat: 
-        path: $HOME/.soap
+        path: /home/vagrant/.soap
       register: soap_exist
       changed_when: soap_exist.stat.exists == false
         
     - name: Download SoapUI
       get_url:
         url: "https://s3.amazonaws.com/downloads.eviware/soapuios/5.6.0/SoapUI-x64-5.6.0.sh"
-        dest: "$HOME/Desktop"
+        dest: "/home/vagrant/Desktop/SoapUI-x64-5.6.0.sh"
+        owner: vagrant
+        group: vagrant
         mode: '0755'
-      become: false
       when: 
         - xubuntu_installed.stdout == "xubuntu-desktop"
         - soap_exist.stat.exists == false
         
     - name: Create soap file that prevents multiple downloads
       file:
-        path: $HOME/.soap
+        path: /home/vagrant/.soap
         state: touch
+        owner: vagrant
+        group: vagrant
       when: soap_exist.stat.exists == false   
       
 
