@@ -1,0 +1,51 @@
+---
+- name: Download Pulse VPN
+  get_url:
+    url: https://software.uconn.edu/wp-content/uploads/sites/1721/2019/09/Pulse-linux-9.1r2.0-x64.deb       
+    dest: /tmp/Pulse-linux-9.1r2.0-x64.deb
+
+- name: Install Pulse VPN
+  apt:
+    deb: /tmp/Pulse-linux-9.1r2.0-x64.deb
+
+- name: Configure Pulse client sh file
+  shell: 'sed -i "s/UBUNTU_VER\ \=\ 18\ \]/& \|\|\ [\ \$UBUNTU_VER\ \=\ 20 \]/" /usr/local/pulse/PulseClient_x86_64.sh'
+
+- name: Install dependecies
+  shell: '/usr/local/pulse/PulseClient_x86_64.sh install_dependency_packages'
+
+- name: install libenchant1c2a
+  apt:
+    name: libenchant1c2a
+    state: present  
+
+- name: Create folders inside pulse
+  file:
+    path: "/usr/local/pulse/{{ item }}"
+    state: directory
+  loop:
+    - extra
+    - debs
+
+- name: Download more debs
+  get_url:
+    url: "{{ item }}"    
+    dest: "/usr/local/pulse/debs"
+  loop:
+    - http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu60_60.2-3ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/w/webkitgtk/libjavascriptcoregtk-1.0-0_2.4.11-3ubuntu3_amd64.deb
+    - http://archive.ubuntu.com/ubuntu/pool/universe/w/webkitgtk/libwebkitgtk-1.0-0_2.4.11-3ubuntu3_amd64.deb
+
+- name: Extract debs
+  shell: "dpkg -x /usr/local/pulse/debs/{{ item }} /usr/local/pulse/extra"
+  loop:
+    - libicu60_60.2-3ubuntu3_amd64.deb
+    - libjavascriptcoregtk-1.0-0_2.4.11-3ubuntu3_amd64.deb
+    - libwebkitgtk-1.0-0_2.4.11-3ubuntu3_amd64.deb
+
+- name: Fix line in pulse desktop app
+  lineinfile: 
+    path: "$HOME/.local/share/applications/pulseUi.desktop"
+    regexp: '^Exec=' 
+    line: "Exec=/usr/bin/env LD_LIBRARY_PATH=/usr/local/pulse/extra/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH /usr/local/pulse/pulseUi"
+  become: false

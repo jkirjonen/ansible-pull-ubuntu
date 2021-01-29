@@ -28,17 +28,8 @@
       register: pulse_installed 
       changed_when: pulse_installed.stdout != 'pulse'
 
-    - name: Download Pulse VPN
-      get_url:
-        url: https://software.uconn.edu/wp-content/uploads/sites/1721/2019/09/Pulse-linux-9.1r2.0-x64.deb       
-        dest: /tmp/Pulse-linux-9.1r2.0-x64.deb
-        mode: '0775'
+    - include_tasks: pulse.yml
       when: pulse_installed.stdout != 'pulse'
-
-    - name: Install Pulse VPN
-      apt:
-        deb: /tmp/Pulse-linux-9.1r2.0-x64.deb
-      when: pulse_installed.stdout != 'pulse'  
 
     - name: Install tasksel
       apt:
