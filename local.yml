@@ -62,7 +62,7 @@
       stat: 
         path: $HOME/.soap
       register: soap_exist
-      change_when: soap_exist.exist == false
+      changed_when: soap_exist.exist == false
         
     - name: Download SoapUI
       get_url:
