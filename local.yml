@@ -70,6 +70,11 @@
       when: 
         - soap_exist.stat.exists == false
         - xubuntu_installed.stdout == "xubuntu-desktop"
+        
+    - name: Disable ubuntu user
+      user:
+        name: ubuntu
+        state: absent
 
     - name: Install desktop
       command: 'tasksel install xubuntu-desktop'
