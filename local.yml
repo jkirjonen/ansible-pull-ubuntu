@@ -62,7 +62,7 @@
       stat: 
         path: $HOME/.soap
       register: soap_exist
-      changed_when: soap_exist.exist == false
+      changed_when: soap_exist.stat.exist == false
         
     - name: Download SoapUI
       get_url:
@@ -72,13 +72,13 @@
       become: false
       when: 
         - xubuntu_installed.stdout == "xubuntu-desktop"
-        - soap_exist.exist == false
+        - soap_exist.stat.exist == false
         
     - name: Create soap file that prevents multiple downloads
       file:
         path: $HOME/.soap
         state: touch
-      when: soap_exist.exist == false   
+      when: soap_exist.stat.exist == false   
       
 
 
