@@ -11,6 +11,7 @@
         - openjdk-8-jdk
         - docker
         - docker-compose
+        - maven
 
     - name: Install snap packages
       snap:
